@@ -5,6 +5,7 @@ using Basket.Core.Repositories;
 using Basket.Infrastructure.Repositories;
 using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +73,15 @@ public class Startup
         
         services.AddHealthChecks()
             .AddRedis(Configuration["CacheSettings:ConnectionString"], "Redis Health", HealthStatus.Degraded);
+        
+        services.AddMassTransit(config =>
+        {
+            config.UsingRabbitMq((ct, cfg)=>
+            {
+                cfg.Host(Configuration["EventBusSettings:HostAddress"]);
+            });
+        });
+        services.AddMassTransitHostedService();
 
         //Identity Server changes
         // var userPolicy = new AuthorizationPolicyBuilder()
