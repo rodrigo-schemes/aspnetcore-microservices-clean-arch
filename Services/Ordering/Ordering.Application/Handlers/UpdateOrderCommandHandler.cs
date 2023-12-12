@@ -20,7 +20,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
         _mapper = mapper;
         _logger = logger;
     }
-    public async Task<Unit> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
         var orderToUpdate = await _orderRepository.GetByIdAsync(request.Id);
         if (orderToUpdate == null)
@@ -31,6 +31,5 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
         _mapper.Map(request, orderToUpdate, typeof(UpdateOrderCommand), typeof(Order));
         await _orderRepository.UpdateAsync(orderToUpdate);
         _logger.LogInformation($"Order {orderToUpdate.Id} is successfully updated");
-        return Unit.Value;
     }
 }

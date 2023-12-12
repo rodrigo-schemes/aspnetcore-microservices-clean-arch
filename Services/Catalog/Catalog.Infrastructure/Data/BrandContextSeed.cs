@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 using Catalog.Core.Entities;
 using MongoDB.Driver;
 
@@ -9,7 +10,8 @@ public static class BrandContextSeed
     public static void SeedData(IMongoCollection<ProductBrand> brandCollection)
     {
         var checkBrands = brandCollection.Find(b => true).Any();
-        var path = Path.Combine("Data", "SeedData", "brands.json");
+        var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, 
+            "Data", "SeedData", "brands.json");
 
         if (!checkBrands)
         {

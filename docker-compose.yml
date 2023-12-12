@@ -1,4 +1,4 @@
-﻿version: '3.4'
+﻿version: '3.9'
 
 services:
   catalogdb:
@@ -6,19 +6,19 @@ services:
     
   basketdb:
     image: redis:alpine
-    
+
   discountdb:
     image: postgres
-    
+
   orderdb:
-    image: mcr.microsoft.com/mssql/server:2017-latest
-    
+    image: mcr.microsoft.com/mssql/server
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
 
   pgadmin:
     image: dpage/pgadmin4
-    
+
   portainer:
     image: portainer/portainer-ce
   
@@ -33,19 +33,19 @@ services:
     build:
       context: .
       dockerfile: Services/Basket/Basket.API/Dockerfile
-      
+
   discount.api:
     image: ${DOCKER_REGISTRY-}discountapi
     build:
       context: .
       dockerfile: Services/Discount/Discount.API/Dockerfile
-      
+
   ordering.api:
     image: ${DOCKER_REGISTRY-}orderingapi
     build:
       context: .
       dockerfile: Services/Ordering/Ordering.API/Dockerfile
-      
+
   ocelotapigw:
     image: ${DOCKER_REGISTRY-}ocelotapigw
     build:

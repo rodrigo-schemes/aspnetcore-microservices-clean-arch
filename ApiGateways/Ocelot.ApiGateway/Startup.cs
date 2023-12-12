@@ -19,6 +19,7 @@ public class Startup
             app.UseDeveloperExceptionPage();
         }
 
+        app.UseHttpsRedirection();
         app.UseRouting();
 
         app.UseEndpoints(endpoints =>

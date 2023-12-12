@@ -61,7 +61,10 @@ public class Startup
         services.AddAutoMapper(typeof(Startup));
         services.AddScoped<DiscountGrpcService>();
         services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
-            (o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
+        (o =>
+        {
+            o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]);
+        });
 
         services.AddSwaggerGen(c =>
         {

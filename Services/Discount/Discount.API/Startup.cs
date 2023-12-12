@@ -1,9 +1,7 @@
-﻿using System.Reflection;
-using Discount.API.Services;
-using Discount.Application.Handlers;
+﻿using Discount.API.Services;
+using Discount.Application.Extensions;
 using Discount.Core.Repositories;
 using Discount.Infrastructure.Repositories;
-using MediatR;
 
 namespace Discount.API;
 
@@ -11,7 +9,8 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddMediatR(typeof(CreateDiscountCommandHandler).GetTypeInfo().Assembly);
+        services.AddApplication();
+
         services.AddScoped<IDiscountRepository, DiscountRepository>();
         services.AddAutoMapper(typeof(Startup));
         services.AddGrpc();

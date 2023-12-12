@@ -1,4 +1,4 @@
-﻿version: '3.4'
+﻿version: '3.9'
 
 services:
   catalogdb:
@@ -14,7 +14,7 @@ services:
     restart: always
     ports:
       - "6379:6379"
-  
+
   discountdb:
     container_name: discountdb
     environment:
@@ -35,7 +35,7 @@ services:
     restart: always
     ports:
       - "1433:1433"
-        
+
   rabbitmq:
     container_name: rabbitmq
     restart: always
@@ -68,6 +68,9 @@ services:
     container_name: catalog.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=cert.pfx
       - "DatabaseSettings__ConnectionString=mongodb://catalogdb:27017"
       - "DatabaseSettings__DatabaseName=CatalogDb"
       - "DatabaseSettings__CollectionName=Products"
@@ -76,12 +79,15 @@ services:
     depends_on:
       - catalogdb
     ports:
-      - "9000:80"
+      - "9000:443"
         
   basket.api:
     container_name: basket.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=cert.pfx
       - "CacheSettings__ConnectionString=basketdb:6379"
       - "GrpcSettings__DiscountUrl=http://discount.api"
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
@@ -89,38 +95,45 @@ services:
       - basketdb
       - rabbitmq
     ports:
-      - "9001:80"
-        
+      - "9001:443"
+
   discount.api:
     container_name: discount.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
       - "DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=Password@1;"
     depends_on:
       - discountdb
     ports:
       - "9002:80"
-        
+
   ordering.api:
     container_name: ordering.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Rahul1234567"
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=cert.pfx
+      - "ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Rahul1234567;TrustServerCertificate=true"
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
     depends_on:
       - orderdb
       - rabbitmq
     ports:
-      - "9003:80"
-        
+      - "9003:443"
+
   ocelotapigw:
     container_name: ocelotapigw
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=cert.pfx
     depends_on:
       - catalog.api
       - basket.api
       - discount.api
       - ordering.api
     ports:
-      - "9010:80"
+      - "9010:443"

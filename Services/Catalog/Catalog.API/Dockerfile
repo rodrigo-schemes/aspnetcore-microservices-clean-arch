@@ -1,9 +1,7 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["Services/Catalog/Catalog.API/Catalog.API.csproj", "Services/Catalog/Catalog.API/"]
 COPY ["Services/Catalog/Catalog.Application/Catalog.Application.csproj", "Services/Catalog/Catalog.Application/"]
@@ -17,8 +15,6 @@ RUN dotnet build "Catalog.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "Catalog.API.csproj" -c Release -o /app/publish
-WORKDIR /src
-COPY ["Services/Catalog/Catalog.Infrastructure/Data/SeedData", "/app/Data/SeedData"]
 
 FROM base AS final
 WORKDIR /app
